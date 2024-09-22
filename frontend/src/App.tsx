@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { api } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+
 import {
   Card,
   CardContent,
@@ -7,8 +9,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+async function getTotalSpent() {
+  const res = await api.expenses["total-spent"].$get();
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
+  const data = await res.json();
+  return data;
+}
+
 function App() {
-  const [totalExpense, setTotalExpense] = useState(0);
+  const { data, error, isPending } = useQuery({
+    queryKey: ["total-spent"],
+    queryFn: getTotalSpent,
+  });
+
+  if (error) return <div>Error</div>;
 
   return (
     <Card className="w-[350px] m-auto">
@@ -16,7 +32,7 @@ function App() {
         <CardTitle>Create project</CardTitle>
         <CardDescription>Deploy your new project in one-click.</CardDescription>
       </CardHeader>
-      <CardContent>{totalExpense}</CardContent>
+      <CardContent>{isPending ? "..." : data?.total}</CardContent>
     </Card>
   );
 }

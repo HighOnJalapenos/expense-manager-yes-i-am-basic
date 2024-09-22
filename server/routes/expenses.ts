@@ -47,6 +47,12 @@ const expensesRoutes = new Hono()
     fakeExpenses.push({ ...expense, id: fakeExpenses.length + 1 });
     return c.json(expense);
   })
+  .get("/total-spent", (c) => {
+    const total = fakeExpenses.reduce((acc, expense) => {
+      return acc + expense.amount;
+    }, 0);
+    return c.json({ total });
+  })
   .get("/:id{[0-9]+}", (c) => {
     const id = c.req.param("id");
     const expense = fakeExpenses.find((expense) => expense.id === parseInt(id));
