@@ -12,13 +12,9 @@ RUN bun install
 COPY . .
 
 # Build the frontend
-WORKDIR /app/frontend
 RUN bun run build
 
-# Move back to the root directory
-WORKDIR /app
-
 # Start the application
-CMD ["bun", "run", "server/index.ts"]
+CMD ["bun", "run", "start"]
 
 EXPOSE 3000
